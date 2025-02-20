@@ -3,6 +3,9 @@
 %   Author: Hao Fan.
 %   Created: March 25, 2020.
 
+pkg load image;
+pkg load signal;
+
 clear; close all; clc;
 addpath(genpath(pwd));
 %% ring-light photometric stereo with 6 lights following Quadratic attenuation
@@ -55,7 +58,8 @@ I3 = I3/max_I * 255;
 I4 = I4/max_I * 255;
 I5 = I5/max_I * 255;
 I6 = I6/max_I * 255;
-figure; subplot(2,3,1); imshow(uint8(I1)); title('0°'); subplot(2,3,2); imshow(uint8(I2)); title('60°'); subplot(2,3,3); imshow(uint8(I3)); title('120°');
+figure;
+subplot(2,3,1); imshow(uint8(I1)); title('0°'); subplot(2,3,2); imshow(uint8(I2)); title('60°'); subplot(2,3,3); imshow(uint8(I3)); title('120°');
 subplot(2,3,4); imshow(uint8(I4)); title('180°'); subplot(2,3,5); imshow(uint8(I5)); title('240°'); subplot(2,3,6); imshow(uint8(I6)); title('300°');
 
 %% Read images (读入图片)
@@ -74,7 +78,7 @@ g_length = g_rows * g_cols;
 
 % Create a shadow mask.
 shadow_mask = (I > shadowThresh);
-se = strel('disk', 2);
+se = strel('disk', 2, 0);
 for i = 1:g_pic_num
   % Erode the shadow map to handle de-mosaiking artifact near shadow boundary.
   shadow_mask(:,:,i) = imerode(shadow_mask(:,:,i), se);
@@ -96,7 +100,8 @@ q = -n(:,:,2) ./ n(:,:,3);
 p(isnan(p)) = 0; 
 q(isnan(q)) = 0;
 
-figure; subplot(1,2,1); mesh(p); title('Gradient p'); xlabel('x(pixel)'); ylabel('y(pixel)'); zlabel('p(pixel)');
+figure;
+subplot(1,2,1); mesh(p); title('Gradient p'); xlabel('x(pixel)'); ylabel('y(pixel)'); zlabel('p(pixel)');
 subplot(1,2,2); mesh(q); title('Gradient q'); xlabel('x(pixel)'); ylabel('y(pixel)'); zlabel('q(pixel)');
 set(gcf,'unit','centimeters','position',[10 5 11 5]);
 
@@ -122,7 +127,8 @@ Height_correct = Height_poisson(:) - fitted_height;
 Height_correct = reshape(Height_correct, m, n);
 fitted_height = reshape(fitted_height, m, n);
 
-figure; subplot(1,4,1); mesh(Height_poisson); title('Initial Height'); xlabel('x(pixel)'); ylabel('y(pixel)'); zlabel('Initial Height(pixel)'); 
+figure;
+subplot(1,4,1); mesh(Height_poisson); title('Initial Height'); xlabel('x(pixel)'); ylabel('y(pixel)'); zlabel('Initial Height(pixel)'); 
 subplot(1,4,2); mesh(fitted_height); title('Fitted Bias Height'); xlabel('x(pixel)'); ylabel('y(pixel)'); zlabel('Fitted Height(pixel)');
 subplot(1,4,3); mesh(Height_correct); title('Correct Height'); xlabel('x(pixel)'); ylabel('y(pixel)'); zlabel('Correct Height(pixel)');
 % set(gcf,'unit','centimeters','position',[10 5 13 6]);
