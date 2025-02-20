@@ -61,6 +61,7 @@ I6 = I6/max_I * 255;
 figure;
 subplot(2,3,1); imshow(uint8(I1)); title('0°'); subplot(2,3,2); imshow(uint8(I2)); title('60°'); subplot(2,3,3); imshow(uint8(I3)); title('120°');
 subplot(2,3,4); imshow(uint8(I4)); title('180°'); subplot(2,3,5); imshow(uint8(I5)); title('240°'); subplot(2,3,6); imshow(uint8(I6)); title('300°');
+print('images.png', '-dpng');
 
 %% Read images (读入图片)
 [M, N, C] = size(I1);
@@ -104,6 +105,7 @@ figure;
 subplot(1,2,1); mesh(p); title('Gradient p'); xlabel('x(pixel)'); ylabel('y(pixel)'); zlabel('p(pixel)');
 subplot(1,2,2); mesh(q); title('Gradient q'); xlabel('x(pixel)'); ylabel('y(pixel)'); zlabel('q(pixel)');
 set(gcf,'unit','centimeters','position',[10 5 11 5]);
+print('gradients.png', '-dpng');
 
 %% integration
 Height_poisson =poisson_solver_function_neumann(p, q);
@@ -152,5 +154,6 @@ Height_n_error = acos(1./bb)/pi * 180;
 % figure; subplot(1,2,1); mesh(Height_d); title('Height error'); xlabel('x(pixel)'); ylabel('y(pixel)'); zlabel('Height error(pixel)');
 subplot(1,4,4);mesh(Height_n_error); title('Angle error');  xlabel('x(pixel)'); ylabel('y(pixel)'); zlabel('Angle error(pixel)');
 set(gcf,'unit','centimeters','position',[10 5 25 5]);
+print('height.png', '-dpng');
 
 disp(['平均角度误差：' num2str(mean(mean(Height_n_error))) '度']);
