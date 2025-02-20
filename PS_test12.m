@@ -6,13 +6,13 @@
 clear; close all; clc;
 addpath(genpath(pwd));
 
-%% Simulation for a flat plane. normal=(0,0,1) (Í¼Ïñ·ÂÕæ,·ÂÕæÒ»¸öÆ½Ãæ)
+%% Simulation for a flat plane. normal=(0,0,1) (å›¾åƒä»¿çœŸ,ä»¿çœŸä¸€ä¸ªå¹³é¢)
 w1 = 600; h1 = 600;
 [X,Y]= meshgrid(1:w1, 1:h1);
 
 scale = 3; %6-5,3-10,2-15,1.5-20
-x = (X - 300)/scale; %+-15 length(³¤)
-y = (Y - 300)/scale; %+-15 width(¿í)
+x = (X - 300)/scale; %+-15 length(é•¿)
+y = (Y - 300)/scale; %+-15 width(å®½)
 
 r = 400; h = 400;
 d0 = sqrt( (x - r).^2 + y.^2 + h^2 );
@@ -42,7 +42,7 @@ I210 = I_base./(d210.^para_attenuation);
 I270 = I_base./(d270.^para_attenuation);
 I330 = I_base./(d330.^para_attenuation);
 
-% Adjust the imaging value in [0 255] (Í¼ÏñÁÁ¶Èµ÷Õûµ½[0 255])
+% Adjust the imaging value in [0 255] (å›¾åƒäº®åº¦è°ƒæ•´åˆ°[0 255])
 max_I1 = max([prctile(I0(:), 99),prctile(I60(:), 99),prctile(I120(:), 99),prctile(I180(:), 99),prctile(I240(:), 99),prctile(I300(:), 99)]);
 max_I2 = max([prctile(I30(:), 99),prctile(I90(:), 99),prctile(I150(:), 99),prctile(I210(:), 99),prctile(I270(:), 99),prctile(I330(:), 99)]);
 max_I = max(max_I1, max_I2);
@@ -59,18 +59,18 @@ I150 = I150/max_I * 255;
 I210 = I210/max_I * 255;
 I270 = I270/max_I * 255;
 I330 = I330/max_I * 255;
-figure; subplot(2,3,1); imshow(uint8(I0)); title('0¡ã'); subplot(2,3,2); imshow(uint8(I60)); title('60¡ã'); subplot(2,3,3); imshow(uint8(I120)); title('120¡ã');
-subplot(2,3,4); imshow(uint8(I180)); title('180¡ã'); subplot(2,3,5); imshow(uint8(I240)); title('240¡ã'); subplot(2,3,6); imshow(uint8(I300)); title('300¡ã');
+figure; subplot(2,3,1); imshow(uint8(I0)); title('0Â°'); subplot(2,3,2); imshow(uint8(I60)); title('60Â°'); subplot(2,3,3); imshow(uint8(I120)); title('120Â°');
+subplot(2,3,4); imshow(uint8(I180)); title('180Â°'); subplot(2,3,5); imshow(uint8(I240)); title('240Â°'); subplot(2,3,6); imshow(uint8(I300)); title('300Â°');
 
 %% ring-light photometric stereo with 6 lights following Quadratic attenuation
-% 6¶Ô³Æ¹âÕÕ·½Ïò£¬ÄæÆ½·½¾àÀëË¥¼õ
+% 6å¯¹ç§°å…‰ç…§æ–¹å‘ï¼Œé€†å¹³æ–¹è·ç¦»è¡°å‡
 shadowThresh = 0.01;
 [M, N, C] = size(I0);
 
-m_symmetry = 0; %1¶Ô³Æ£¬0²»¶Ô³Æasymmetry
+m_symmetry = 0; %1å¯¹ç§°ï¼Œ0ä¸å¯¹ç§°asymmetry
 g_pic_num = 9;
 
-%% 12¶Ô³ÆÍ¼£¬6¶Ô³ÆÍ¼£¬4¶Ô³ÆÍ¼, 3·Ç¶Ô
+%% 12å¯¹ç§°å›¾ï¼Œ6å¯¹ç§°å›¾ï¼Œ4å¯¹ç§°å›¾, 3éå¯¹
 if m_symmetry == 1
     if g_pic_num == 12
         I = ones(M, N, g_pic_num);
@@ -78,21 +78,21 @@ if m_symmetry == 1
         I(:,:,4) = I90;    I(:,:,5) = I120;    I(:,:,6) = I150;
         I(:,:,7) = I180;    I(:,:,8) = I210;    I(:,:,9) = I240;
         I(:,:,10) = I270;    I(:,:,11) = I300;    I(:,:,12) = I330;
-    elseif g_pic_num == 6  %6¸ö¶Ô³Æ
+    elseif g_pic_num == 6  %6ä¸ªå¯¹ç§°
         I = ones(M, N, g_pic_num);
         I(:,:,1) = I0;    I(:,:,2) = I60;    I(:,:,3) = I120;
         I(:,:,4) = I180;    I(:,:,5) = I240;    I(:,:,6) = I300;
-    elseif g_pic_num == 4  %4¸ö¶Ô³Æ
+    elseif g_pic_num == 4  %4ä¸ªå¯¹ç§°
         I = ones(M, N, g_pic_num);
         I(:,:,1) = I0;    I(:,:,2) = I90;
         I(:,:,3) = I180;    I(:,:,4) = I270;
-    elseif g_pic_num == 3  %3¸ö¶Ô³Æ
+    elseif g_pic_num == 3  %3ä¸ªå¯¹ç§°
         I = ones(M, N, g_pic_num);
         I(:,:,1) = I0;    I(:,:,2) = I120;
         I(:,:,3) = I240; 
     end
     
-    %% main light direction (¹âÕÕ·½Ïò)
+    %% main light direction (å…‰ç…§æ–¹å‘)
     L = zeros(3, g_pic_num);
     Slant = 45;
     Slant_sin = sin(Slant/180*pi);
@@ -106,7 +106,7 @@ if m_symmetry == 1
     end
     
 elseif m_symmetry == 0
-    % main light direction (¹âÕÕ·½Ïò)
+    % main light direction (å…‰ç…§æ–¹å‘)
     L_base = zeros(3, 12);
     Slant = 45;
     Slant_sin = sin(Slant/180*pi);
@@ -118,7 +118,7 @@ elseif m_symmetry == 0
         L_base(2,i) = Slant_sin * sin(Tilt/180*pi);
         L_base(3,i) = Slant_cos;
     end
-    %%%¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª¡ª%%%
+    %%%â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”â€”%%%
     if g_pic_num == 9 %1-9/12
         I = ones(M, N, g_pic_num);
         I(:,:,1) = I0;    I(:,:,2) = I30;    I(:,:,3) = I60;
@@ -126,7 +126,7 @@ elseif m_symmetry == 0
         I(:,:,7) = I180;    I(:,:,8) = I210;    I(:,:,9) = I240;
         L = L_base(:,1:9);
     end
-    if g_pic_num == 6 %6²»¶Ô³Æ
+    if g_pic_num == 6 %6ä¸å¯¹ç§°
         I = ones(M, N, g_pic_num);
         I(:,:,1) = I0;    I(:,:,2) = I90;    I(:,:,3) = I120;
         I(:,:,4) = I180;    I(:,:,5) = I240;    I(:,:,6) = I330;
@@ -134,7 +134,7 @@ elseif m_symmetry == 0
         L(:,1) = L_base(:,1);  L(:,2) = L_base(:,4);  L(:,3) = L_base(:,5);
         L(:,4) = L_base(:,7);  L(:,5) = L_base(:,9);  L(:,6) = L_base(:,12);
     end
-    if g_pic_num == 4 %4²»¶Ô³Æ
+    if g_pic_num == 4 %4ä¸å¯¹ç§°
         I = ones(M, N, g_pic_num);
         I(:,:,1) = I0;    I(:,:,2) = I30;    I(:,:,3) = I180;
         I(:,:,4) = I300;   
@@ -146,7 +146,7 @@ else
     return;
 end
 
-%% Size of the image (Í¼ÏñµÄ³ß¶ÈĞÅÏ¢)
+%% Size of the image (å›¾åƒçš„å°ºåº¦ä¿¡æ¯)
 [g_rows, g_cols] = size(I0);
 g_length = g_rows * g_cols;
 
@@ -181,20 +181,20 @@ set(gcf,'unit','centimeters','position',[10 5 13 6]);
 %% integration
 Height_poisson =poisson_solver_function_neumann(p, q);
 % Height_poisson = flipud(Height_poisson);
-% figure;mesh(Height_poisson); title('»ı·Ö¸ß¶È(ÏñËØ)')
+% figure;mesh(Height_poisson); title('ç§¯åˆ†é«˜åº¦(åƒç´ )')
 
-%% The propsed method to fit the bias. (ÄâºÏ y - namda * H  = a x.^2 + b y.^2 + c x + d y + f;)
+%% The propsed method to fit the bias. (æ‹Ÿåˆ y - namda * H  = a x.^2 + b y.^2 + c x + d y + f;)
 index = floor(randi(length(Height_poisson(:)),500,1));
-Height_diff = Height_poisson(index) - 0; % ÏñËØ³ß¶È
-[y, x] = ind2sub(size(Height_poisson), index); %ind2subµÃµ½µÄÊÇĞĞÁĞ£¬×¢Òâ ĞĞÁĞ Óë xy Ïà·´
+Height_diff = Height_poisson(index) - 0; % åƒç´ å°ºåº¦
+[y, x] = ind2sub(size(Height_poisson), index); %ind2subå¾—åˆ°çš„æ˜¯è¡Œåˆ—ï¼Œæ³¨æ„ è¡Œåˆ— ä¸ xy ç›¸å
 AA = [x.^2, y.^2, x, y, ones(length(x),1)];
 
-% ·½·¨1£º¾ØÕó³ı·¨
+% æ–¹æ³•1ï¼šçŸ©é˜µé™¤æ³•
 para = AA \ Height_diff;
 
-% Compute the corrected height (¸ù¾İ²ÎÊı¼ÆËãÕæÊµ½á¹û)
-[m, n] = size(Height_poisson); %size µÃµ½µÄÊÇĞĞÁĞ
-[xx, yy] = meshgrid(1:n, 1:m);          %×¢ÒâĞĞ¡¢ÁĞ£¬ºÍx£¬yµÄ¶ÔÓ¦¹ØÏµ % ×¢ÒâÏñËØ³ß¶È£¬²»ÄÜ»ìÏı£¡£¡
+% Compute the corrected height (æ ¹æ®å‚æ•°è®¡ç®—çœŸå®ç»“æœ)
+[m, n] = size(Height_poisson); %size å¾—åˆ°çš„æ˜¯è¡Œåˆ—
+[xx, yy] = meshgrid(1:n, 1:m);          %æ³¨æ„è¡Œã€åˆ—ï¼Œå’Œxï¼Œyçš„å¯¹åº”å…³ç³» % æ³¨æ„åƒç´ å°ºåº¦ï¼Œä¸èƒ½æ··æ·†ï¼ï¼
 fitted_height = [xx(:).^2, yy(:).^2, xx(:), yy(:), ones(m*n,1)] * para(:);
 Height_correct = Height_poisson(:) - fitted_height;
 Height_correct = reshape(Height_correct, m, n);
@@ -208,14 +208,14 @@ subplot(1,2,2); mesh(Height_correct); title('Correctted Height'); xlabel('x(pixe
 set(gcf,'unit','centimeters','position',[10 5 13 6]);
 
 % Height Error Analysis
-Height_d = Height_correct - 0; % ÏñËØ³ß¶È
-disp(['Æ½¾ù¸ß¶ÈÎó²î£º' num2str(mean(mean(abs(Height_d)))) 'ÏñËØ']);
+Height_d = Height_correct - 0; % åƒç´ å°ºåº¦
+disp(['å¹³å‡é«˜åº¦è¯¯å·®ï¼š' num2str(mean(mean(abs(Height_d)))) 'åƒç´ ']);
 
 %figure; mesh(Height_d/scale); title('Height error(mm)');colorbar;
-disp(['Æ½¾ù¸ß¶ÈÎó²î£º' num2str(mean(mean(abs(Height_d/scale)))) 'ºÁÃ×']);
+disp(['å¹³å‡é«˜åº¦è¯¯å·®ï¼š' num2str(mean(mean(abs(Height_d/scale)))) 'æ¯«ç±³']);
 
-% Angle error Analysis (Æ«²î½Ç¶ÈµÄÎó²î·ÖÎö)
-% ·¨ÏòÃ»ÓĞ³ß¶È£¬µ«ÊÇÒªÈ·ÈÏ¹â¶ÈÁ¢Ìå¸ß¶È»ı·ÖµÄ³ß¶È¶¼ÊÇÏñËØ£¬»ò¶¼ÊÇÕæÊµ³ß¶È£»»ìÏıºó¼ÆËãµÄ·¨ÏòÊÇ´íÎóµÄ£¡£¡£¡
+% Angle error Analysis (åå·®è§’åº¦çš„è¯¯å·®åˆ†æ)
+% æ³•å‘æ²¡æœ‰å°ºåº¦ï¼Œä½†æ˜¯è¦ç¡®è®¤å…‰åº¦ç«‹ä½“é«˜åº¦ç§¯åˆ†çš„å°ºåº¦éƒ½æ˜¯åƒç´ ï¼Œæˆ–éƒ½æ˜¯çœŸå®å°ºåº¦ï¼›æ··æ·†åè®¡ç®—çš„æ³•å‘æ˜¯é”™è¯¯çš„ï¼ï¼ï¼
 [p_correct,q_correct] = gradient(Height_correct);
 bb = sqrt(p_correct.^2 + q_correct.^2 + 1);
 % Ninit(:,:,1) = - p_correct./bb;
@@ -227,4 +227,4 @@ figure; subplot(1,2,1); mesh(Height_d); title('Height error'); xlabel('x(pixel)'
 subplot(1,2,2);mesh(Height_n_error); title('Angle error');  xlabel('x(pixel)'); ylabel('y(pixel)'); zlabel('Angle error(pixel)');
 set(gcf,'unit','centimeters','position',[10 5 13 6]);
 
-disp(['Æ½¾ù½Ç¶ÈÎó²î£º' num2str(mean(mean(Height_n_error))) '¶È']);
+disp(['å¹³å‡è§’åº¦è¯¯å·®ï¼š' num2str(mean(mean(Height_n_error))) 'åº¦']);
